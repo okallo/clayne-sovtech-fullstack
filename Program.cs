@@ -22,13 +22,16 @@ if (app.Environment.IsDevelopment())
 
 if (!app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    options.RoutePrefix = "api";
+    options.RoutePrefix = string.Empty;
 });
 app.UseHttpsRedirection();
 app.UseStaticFiles();
