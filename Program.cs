@@ -9,15 +9,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // ConfigureServices
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AnyOrigin", builder =>
-    {
-        builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod();
-    });
-});
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("AnyOrigin", builder =>
+//     {
+//         builder
+//             .AllowAnyOrigin()
+//             .AllowAnyMethod();
+//     });
+// });
 
 
 if (!builder.Environment.IsDevelopment())
@@ -37,13 +37,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AnyOrigin");
+
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     options.RoutePrefix = string.Empty;
 });
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
