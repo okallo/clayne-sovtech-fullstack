@@ -35,7 +35,9 @@ public class SovtechService : ISovtechService
             var joke = JsonSerializer.Deserialize<Joke>(content);
             if (joke?.Value == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris Joke not found");
+                return new Joke();
+                //throw new Exception("Chuck Norris Joke not found");
+                //throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris Joke not found");
             }
             else
             {
@@ -62,7 +64,8 @@ public class SovtechService : ISovtechService
             var joke = JsonSerializer.Deserialize<Joke>(content);
             if (joke?.Value == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris Joke not found");
+                throw new Exception("Chuck Norris Joke not found");
+                //throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris Joke not found");
             }
             else
             {
@@ -88,7 +91,9 @@ public class SovtechService : ISovtechService
             var items = JsonSerializer.Deserialize<string[]>(content);
             if (items == null || items.Length == 0 || items.All(item => string.IsNullOrEmpty(item)))
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound, "Categories not found");
+                return new string[0];
+                //throw new Exception("Categories not found");
+               // throw new HttpResponseException(HttpStatusCode.NotFound, "Categories not found");
             }
             else
             {
@@ -124,7 +129,9 @@ public class SovtechService : ISovtechService
                     return res;
                 }
             }
-            throw new HttpResponseException(HttpStatusCode.NotFound, "People not found");
+            return Enumerable.Empty<Person>();
+            //throw new Exception("Nobody by was found");
+            //throw new HttpResponseException(HttpStatusCode.NotFound, "People not found");
         }
         catch (Exception ex)
         {
@@ -153,7 +160,9 @@ public class SovtechService : ISovtechService
                     return res;
                 }
             }
-            throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris joke not found");
+            return Enumerable.Empty<Joke>();
+            //throw new Exception($"Chuck Norris joke containing {query} not found");
+            //throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris joke not found");
         }
         catch (Exception ex)
         {
@@ -184,8 +193,9 @@ public class SovtechService : ISovtechService
                     return results;
                 }
             }
-
-            throw new HttpResponseException(HttpStatusCode.NotFound, "Nobody was found");
+            return Enumerable.Empty<object>();
+            //throw new Exception($"Nobody named {query} not found in swapi");
+            //throw new HttpResponseException(HttpStatusCode.NotFound, "Nobody was found");
         }
         catch (Exception ex)
         {

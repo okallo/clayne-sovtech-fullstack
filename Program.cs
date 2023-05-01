@@ -1,4 +1,5 @@
 using System.Net;
+using clayne_sovtech_fullstack.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<ISovtechService, SovtechService>();
+builder.Services.AddScoped<HttpClient,HttpClient>();
 
 var app = builder.Build();
 
