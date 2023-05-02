@@ -24,9 +24,9 @@ public class SovtechController : ControllerBase
     }
     [HttpGet]
     [Route("/swapi/people")]
-    public async Task<IEnumerable<Person>> GetPeople()
+    public async Task<IEnumerable<Person>> GetPeople(int page = 1)
     {
-        return await _sovtechService.GetAllPeopleAsync();
+        return await _sovtechService.GetAllPeopleAsync(page);
     }
     public class SearchRes
     {
