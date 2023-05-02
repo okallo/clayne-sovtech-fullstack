@@ -111,8 +111,6 @@ public class SovtechService : ISovtechService
 
     public async Task<IEnumerable<Person>> GetAllPeopleAsync(int page = 1)
     {
-        var start = (page - 1) * 10 + 1;
-        var end = start + 9;
         try
         {
             var url = $"{_peopleBaseUrl}?page={page}";
@@ -123,6 +121,7 @@ public class SovtechService : ISovtechService
                 var content = await response.Content.ReadAsStringAsync();
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var result = JsonSerializer.Deserialize<SearchPeopleResult<Person>>(content, options);
+                Console.WriteLine(result);
                 if (result?.Results?.Count() > 0)
                 {
                     var res = result.Results;
@@ -142,7 +141,7 @@ public class SovtechService : ISovtechService
 
     }
 
-    public async Task<IEnumerable<Joke>> SearchJokeAsync(string query, int limit = 50, int page = 1)
+    public async Task<IEnumerable<Joke>> SearchJokeAsync(string query, int page = 1)
     {
 
         try
@@ -171,7 +170,7 @@ public class SovtechService : ISovtechService
         }
     }
 
-    public async Task<IEnumerable<object>> SearchPeopleAsync(string query, int limit = 50, int page = 1)
+    public async Task<IEnumerable<object>> SearchPeopleAsync(string query, int page = 1)
     {
         try
         {
