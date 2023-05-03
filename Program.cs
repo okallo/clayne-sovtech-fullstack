@@ -13,7 +13,7 @@ builder.Services.AddScoped<ISovtechService, SovtechService>();
 builder.Services.AddScoped<HttpClient,HttpClient>();
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+        policy.WithOrigins("http://localhost:8080/#/", "https://clayne-sovtech-client.herokuapp.com").AllowAnyHeader().AllowAnyHeader())
 );
 var app = builder.Build();
 
