@@ -11,7 +11,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ISovtechService, SovtechService>();
 builder.Services.AddScoped<HttpClient,HttpClient>();
-
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,7 +40,7 @@ app.UseSwaggerUI(options =>
 });
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-//app.UseCors(options => options.AllowAnyOrigin());
+app.UseCors();
 
 app.UseAuthorization();
 
