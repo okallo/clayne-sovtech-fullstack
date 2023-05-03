@@ -24,7 +24,7 @@ public class SovtechService : ISovtechService
         }
     }
 
-    public async Task<Joke> GetRandomJokeAsync()
+    public async Task<SearchResult<Joke>> GetRandomJokeAsync(int pageSize = 10, int pageNumber = 1)
     {
         try
         {
@@ -32,12 +32,10 @@ public class SovtechService : ISovtechService
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var joke = JsonSerializer.Deserialize<Joke>(content);
-            if (joke?.Value == null)
+            var joke = JsonSerializer.Deserialize<SearchResult<Joke>>(content);
+            if (joke?.Results == null)
             {
-                return new Joke();
-                //throw new Exception("Chuck Norris Joke not found");
-                //throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris Joke not found");
+                return new SearchResult<Joke>();
             }
             else
             {
@@ -53,7 +51,7 @@ public class SovtechService : ISovtechService
     }
 
 
-    public async Task<Joke> GetJokeByCategoryAsync(string category)
+    public async Task<SearchResult<Joke>> GetJokeByCategoryAsync(string category, int pageSize = 10, int pageNumber = 1)
     {
         try
         {
@@ -61,16 +59,12 @@ public class SovtechService : ISovtechService
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var joke = JsonSerializer.Deserialize<Joke>(content);
-            if (joke?.Value == null)
+            var joke = JsonSerializer.Deserialize<SearchResult<Joke>>(content);
+            if (joke?.Results == null)
             {
-                throw new Exception("Chuck Norris Joke not found");
-                //throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris Joke not found");
+                return new SearchResult<Joke>();
             }
-            else
-            {
-                return joke;
-            }
+            return joke;
         }
         catch (Exception ex)
         {
@@ -93,7 +87,7 @@ public class SovtechService : ISovtechService
             {
                 return new string[0];
                 //throw new Exception("Categories not found");
-               // throw new HttpResponseException(HttpStatusCode.NotFound, "Categories not found");
+                // throw new HttpResponseException(HttpStatusCode.NotFound, "Categories not found");
             }
             else
             {
@@ -109,28 +103,26 @@ public class SovtechService : ISovtechService
 
     }
 
-    public async Task<IEnumerable<Person>> GetAllPeopleAsync(int page = 1)
+    public async Task<SearchResult<Person>> GetAllPeopleAsync(int pageSize = 10, int pageNumber = 1)
     {
         try
         {
-            var url = $"{_peopleBaseUrl}?page={page}";
+            var url = $"{_peopleBaseUrl}?page={pageNumber}";
             var response = await _httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var result = JsonSerializer.Deserialize<SearchPeopleResult<Person>>(content, options);
+                var result = JsonSerializer.Deserialize<SearchResult<Person>>(content, options);
                 Console.WriteLine(result);
                 if (result?.Results?.Count() > 0)
                 {
                     var res = result.Results;
-                    return res;
+                    return result;
                 }
             }
-            return Enumerable.Empty<Person>();
-            //throw new Exception("Nobody by was found");
-            //throw new HttpResponseException(HttpStatusCode.NotFound, "People not found");
+            return new SearchResult<Person>();
         }
         catch (Exception ex)
         {
@@ -141,7 +133,7 @@ public class SovtechService : ISovtechService
 
     }
 
-    public async Task<IEnumerable<Joke>> SearchJokeAsync(string query, int page = 1)
+    public async Task<SearchResult<Joke>> SearchJokeAsync(string query, int pageSize = 10, int pageNumber = 1)
     {
 
         try
@@ -152,16 +144,14 @@ public class SovtechService : ISovtechService
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var result = JsonSerializer.Deserialize<ChuckSearchResult>(content, options);
-                if (result?.Result?.Count() > 0)
+                var result = JsonSerializer.Deserialize<SearchResult<Joke>>(content, options);
+                if (result?.Results?.Count() > 0)
                 {
-                    var res = result.Result;
+                    var res = result;
                     return res;
                 }
             }
-            return Enumerable.Empty<Joke>();
-            //throw new Exception($"Chuck Norris joke containing {query} not found");
-            //throw new HttpResponseException(HttpStatusCode.NotFound, "Chuck Norris joke not found");
+            return new SearchResult<Joke>();
         }
         catch (Exception ex)
         {
@@ -170,13 +160,10 @@ public class SovtechService : ISovtechService
         }
     }
 
-    public async Task<IEnumerable<object>> SearchPeopleAsync(string query, int page = 1)
+    public async Task<SearchResult<Person>> SearchPeopleAsync(string query, int pageSize = 10, int pageNumber = 1)
     {
         try
         {
-            var results = new List<object>();
-
-            // Search for people
             var peopleUrl = $"{_peopleBaseUrl}?search={query}";
             var peopleResponse = await _httpClient.GetAsync(peopleUrl);
 
@@ -184,17 +171,13 @@ public class SovtechService : ISovtechService
             {
                 var content = await peopleResponse.Content.ReadAsStringAsync();
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var result = JsonSerializer.Deserialize<SwapiSearchResult<Person>>(content, options);
+                var result = JsonSerializer.Deserialize<SearchResult<Person>>(content, options);
                 if (result?.Results?.Count() > 0)
                 {
-                    var res = result.Results;
-                    results.AddRange(result.Results);
-                    return results;
+                    return result;
                 }
             }
-            return Enumerable.Empty<object>();
-            //throw new Exception($"Nobody named {query} not found in swapi");
-            //throw new HttpResponseException(HttpStatusCode.NotFound, "Nobody was found");
+            return new SearchResult<Person>();
         }
         catch (Exception ex)
         {
