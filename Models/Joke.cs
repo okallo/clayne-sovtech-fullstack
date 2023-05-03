@@ -1,12 +1,12 @@
-using System.Text.Json.Serialization;
 
 namespace clayne_sovtech_fullstack.models;
 public class Joke
 {
-    [JsonPropertyName("id")]
-    public string Id { get; set; }= string.Empty;
-
-    [JsonPropertyName("value")]
-    public string Value { get; set; }= string.Empty;
-    public string Url { get; set; }= string.Empty;
+    public string id { get; set; } = string.Empty;
+    public string value { get; set; } = string.Empty;
+    public string url { get; set; } = string.Empty;
+    public string icon_url { get; set; } = string.Empty;
+    public string created_at {get;set;} = string.Empty;
+    public string updated_at {get;set;} =string.Empty;
+    public string[]? categories {get;set;} 
 }

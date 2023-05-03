@@ -22,38 +22,44 @@ public class SovtechController : ControllerBase
     {
         return _sovtechService.GetCategoriesAsync();
     }
+     [HttpGet]
+    [Route("/chuck/category/joke")]
+    public Task<Joke> GetJokeByCategory(string category)
+    {
+        return _sovtechService.GetJokeByCategoryAsync(category);
+    }
+       [HttpGet]
+    [Route("/chuck/random/joke")]
+    public Task<Joke> GetRandomJoke()
+    {
+        return _sovtechService.GetRandomJokeAsync();
+    }
+
     [HttpGet]
     [Route("/swapi/people")]
-    public async Task<IEnumerable<Person>> GetPeople(int page = 1)
+    public async Task<SearchResult<Person>> GetPeople(int pageNumber = 1)
     {
-        return await _sovtechService.GetAllPeopleAsync(page);
-    }
-    public class SearchRes
-    {
-        List<Joke>? Jokes { get; set; }
-        List<Person>? People { get; set; }
+        return await _sovtechService.GetAllPeopleAsync(pageNumber);
     }
     [HttpGet]
     [Route("/search/{query}")]
-    public async Task<Dictionary<string, IEnumerable<object>>> Search(string query)
+    public async Task<Dictionary<string, object>> Search(string query)
     {
-        
-            var chuckResult = _sovtechService.SearchJokeAsync(query);
+
+        var chuckResult = _sovtechService.SearchJokeAsync(query);
         var swapiResult = _sovtechService.SearchPeopleAsync(query);
 
         await Task.WhenAll(chuckResult, swapiResult);
         var chuckres = await chuckResult;
         var swapires = await swapiResult;
-        // var c = chuckres.Any()? chuckres: null;
-        // var s = swapires.Any()? swapires:null;
-        var results = new Dictionary<string, IEnumerable<object>>
+        var results = new Dictionary<string, object>
             {
                 { "Jokes", chuckres},
                 { "People", swapires}
             };
         return results;
-        
 
-        }
+
+    }
 
 }
