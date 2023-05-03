@@ -22,11 +22,24 @@ public class SovtechController : ControllerBase
     {
         return _sovtechService.GetCategoriesAsync();
     }
+     [HttpGet]
+    [Route("/chuck/category/joke")]
+    public Task<Joke> GetJokeByCategory(string category)
+    {
+        return _sovtechService.GetJokeByCategoryAsync(category);
+    }
+       [HttpGet]
+    [Route("/chuck/random/joke")]
+    public Task<Joke> GetRandomJoke()
+    {
+        return _sovtechService.GetRandomJokeAsync();
+    }
+
     [HttpGet]
     [Route("/swapi/people")]
-    public async Task<SearchResult<Person>> GetPeople(int page = 1)
+    public async Task<SearchResult<Person>> GetPeople(int pageNumber = 1)
     {
-        return await _sovtechService.GetAllPeopleAsync(page);
+        return await _sovtechService.GetAllPeopleAsync(pageNumber);
     }
     [HttpGet]
     [Route("/search/{query}")]

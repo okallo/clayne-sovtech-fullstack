@@ -24,23 +24,21 @@ public class SovtechService : ISovtechService
         }
     }
 
-    public async Task<SearchResult<Joke>> GetRandomJokeAsync(int pageSize = 10, int pageNumber = 1)
+    public async Task<Joke> GetRandomJokeAsync()
     {
         try
         {
             var response = await _httpClient.GetAsync($"{_jokeBaseUrl}random");
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode) {
 
             var content = await response.Content.ReadAsStringAsync();
-            var joke = JsonSerializer.Deserialize<SearchResult<Joke>>(content);
-            if (joke?.Results == null)
-            {
-                return new SearchResult<Joke>();
-            }
-            else
+            var joke = JsonSerializer.Deserialize<Joke>(content);
+            if (joke != null)
             {
                 return joke;
             }
+            }
+            return new Joke();
         }
         catch (Exception ex)
         {
@@ -51,20 +49,23 @@ public class SovtechService : ISovtechService
     }
 
 
-    public async Task<SearchResult<Joke>> GetJokeByCategoryAsync(string category, int pageSize = 10, int pageNumber = 1)
+    public async Task<Joke> GetJokeByCategoryAsync(string category)
     {
         try
         {
             var response = await _httpClient.GetAsync($"{_jokeBaseUrl}random?category={category}");
-            response.EnsureSuccessStatusCode();
-
+           if (response.IsSuccessStatusCode) {
+               
             var content = await response.Content.ReadAsStringAsync();
-            var joke = JsonSerializer.Deserialize<SearchResult<Joke>>(content);
-            if (joke?.Results == null)
+            var joke = JsonSerializer.Deserialize<Joke>(content);
+            if (joke != null)
             {
-                return new SearchResult<Joke>();
+                return joke;
             }
-            return joke;
+            
+           }
+          
+                return new Joke();
         }
         catch (Exception ex)
         {
@@ -79,20 +80,16 @@ public class SovtechService : ISovtechService
         try
         {
             var response = await _httpClient.GetAsync($"{_jokeBaseUrl}categories");
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode) {
 
             var content = await response.Content.ReadAsStringAsync();
             var items = JsonSerializer.Deserialize<string[]>(content);
-            if (items == null || items.Length == 0 || items.All(item => string.IsNullOrEmpty(item)))
+            if (items != null)
             {
-                return new string[0];
-                //throw new Exception("Categories not found");
-                // throw new HttpResponseException(HttpStatusCode.NotFound, "Categories not found");
+               return items;
             }
-            else
-            {
-                return items;
             }
+             return new string[0];
 
         }
         catch (Exception ex)
@@ -103,7 +100,7 @@ public class SovtechService : ISovtechService
 
     }
 
-    public async Task<SearchResult<Person>> GetAllPeopleAsync(int pageSize = 10, int pageNumber = 1)
+    public async Task<SearchResult<Person>> GetAllPeopleAsync( int pageNumber = 1)
     {
         try
         {
@@ -133,7 +130,7 @@ public class SovtechService : ISovtechService
 
     }
 
-    public async Task<SearchResult<Joke>> SearchJokeAsync(string query, int pageSize = 10, int pageNumber = 1)
+    public async Task<SearchResult<Joke>> SearchJokeAsync(string query)
     {
 
         try
@@ -145,7 +142,7 @@ public class SovtechService : ISovtechService
                 var content = await response.Content.ReadAsStringAsync();
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var result = JsonSerializer.Deserialize<SearchResult<Joke>>(content, options);
-                if (result?.Results?.Count() > 0)
+                if (result?.total > 0)
                 {
                     var res = result;
                     return res;
@@ -160,7 +157,7 @@ public class SovtechService : ISovtechService
         }
     }
 
-    public async Task<SearchResult<Person>> SearchPeopleAsync(string query, int pageSize = 10, int pageNumber = 1)
+    public async Task<SearchResult<Person>> SearchPeopleAsync(string query)
     {
         try
         {
